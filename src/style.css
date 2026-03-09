@@ -1,0 +1,160 @@
+/* Custom styles beyond Tailwind */
+.font-['Inter'] {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Smooth transitions */
+.nav-btn {
+    transition: all 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Alert animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.alert-enter {
+    animation: slideIn 0.3s ease-out;
+}
+
+.alert-exit {
+    animation: fadeOut 0.3s ease-out;
+}
+
+/* Print styles for PDF export */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .page-content {
+        padding-bottom: 80px;
+    }
+}
+
+/* Chart container responsiveness */
+canvas {
+    max-height: 300px;
+}
+
+/* Modal backdrop blur */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+}
+
+/* Custom form styling */
+input:focus, select:focus, textarea:focus {
+    ring: 2px;
+    ring-color: #16a34a;
+}
+
+/* Status badges */
+.status-badge {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+}
+
+/* House colors */
+.house-1f { border-left: 4px solid #3b82f6; }
+.house-2j { border-left: 4px solid #10b981; }
+.house-3f { border-left: 4px solid #f59e0b; }
+.house-4j { border-left: 4px solid #8b5cf6; }
+
+/* Loading spinner */
+.spinner {
+    border: 3px solid rgba(0,0,0,0.1);
+    border-radius: 50%;
+    border-top: 3px solid #16a34a;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Table row hover effect */
+.table-row-hover:hover {
+    background-color: #f9fafb;
+    transition: background-color 0.2s;
+}
+
+/* Card hover lift */
+.card-hover {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+body {
+	padding: 2rem;
+	font-family: -apple-system, BlinkMacSystemFont, "Arial", sans-serif;
+}
+
+h1 {
+	font-size: 16px;
+	margin-top: 0;
+}
+
+p {
+	color: rgb(107, 114, 128);
+	font-size: 15px;
+	margin-bottom: 10px;
+	margin-top: 5px;
+}
+
+.card {
+	max-width: 620px;
+	margin: 0 auto;
+	padding: 16px;
+	border: 1px solid lightgray;
+	border-radius: 16px;
+}
+
+.card p:last-child {
+	margin-bottom: 0;
+}

@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dove Haven Farms - Management Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50 font-['Inter'] text-gray-800">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-green-600 to-teal-700 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+            <div class="text-center mb-8">
+                <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="egg" class="w-8 h-8 text-green-600"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">Dove Haven Farms</h1>
+                <p class="text-gray-600 mt-2">Farm Management Portal</p>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none" placeholder="Enter username" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none" placeholder="Enter password" required>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded text-green-600 focus:ring-green-500 mr-2">
+                        <span class="text-gray-600">Remember me</span>
+                    </label>
+                    <a href="#" class="text-green-600 hover:text-green-700">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-200 font-medium">
+                    Sign In
+                </button>
+            </form>
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <p>Demo Accounts:</p>
+                <p class="mt-1"><strong>Admin:</strong> admin / admin123</p>
+                <p><strong>Farm Manager 1:</strong> manager1 / manager123 (Houses 1-5)</p>
+                <p><strong>Farm Manager 2:</strong> manager2 / manager123 (Houses 6-10)</p>
+                <p><strong>Supervisor:</strong> supervisor / super123 (Read-only all houses)</p>
+                <p><strong>Sales Manager:</strong> sales / sales123 (Sales & Purchases only)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="hidden min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-gray-900 text-white w-full md:w-64 flex-shrink-0 hidden md:flex flex-col transition-all duration-300">
+            <div class="p-6 border-b border-gray-800">
+                <div class="flex items-center gap-3">
+                    <div class="bg-green-500 p-2 rounded-lg">
+                        <i data-lucide="egg" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg">Dove Haven</h2>
+                        <p class="text-xs text-gray-400">Farm Portal</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <button onclick="navigateTo('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left bg-gray-800" data-page="dashboard">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="navigateTo('rearing')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left" data-page="rearing">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                    <span>Rearing & Production</span>
+                </button>
+                <button onclick="navigateTo('inventory')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left" data-page="inventory">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                    <span>Stock & Feed</span>
+                </button>
+                <button onclick="navigateTo('crm')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left" data-page="crm">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    <span>Sales & Purchases</span>
+                </button>
+                <button onclick="navigateTo('crates')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left" data-page="crates">
+                    <i data-lucide="containers" class="w-5 h-5"></i>
+                    <span>Crate Inventory</span>
+                </button>
+                <button onclick="navigateTo('reports')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left" data-page="reports">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                    <span>Reports</span>
+                </button>
+                <button onclick="navigateTo('chicks')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left" data-page="chicks">
+                    <i data-lucide="bird" class="w-5 h-5"></i>
+                    <span>Day-Old Chicks</span>
+                </button>
+                <div id="adminMenu" class="hidden pt-4 border-t border-gray-800 mt-4">
+                    <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Administration</p>
+                    <button onclick="navigateTo('admin')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition text-left" data-page="admin">
+                        <i data-lucide="shield" class="w-5 h-5"></i>
+                        <span>Admin Portal</span>
+                    </button>
+                </div>
+            </nav>
+            <div class="p-4 border-t border-gray-800">
+                <div class="flex items-center gap-3 mb-4">
+                    <img src="https://static.photos/people/200x200/42" alt="User" class="w-10 h-10 rounded-full bg-gray-700">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium truncate" id="userNameDisplay">User Name</p>
+                        <p class="text-xs text-gray-400 truncate" id="userRoleDisplay">Role</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-800 transition text-red-400">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Mobile Header -->
+        <div class="md:hidden bg-gray-900 text-white p-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="egg" class="w-6 h-6 text-green-500"></i>
+                <span class="font-bold">Dove Haven</span>
+            </div>
+            <button onclick="toggleMobileMenu()" class="p-2">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-800 text-white p-4 space-y-2">
+            <button onclick="navigateTo('dashboard')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Dashboard</button>
+            <button onclick="navigateTo('production')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Egg Collection</button>
+            <button onclick="navigateTo('inventory')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Stock & Feed</button>
+            <button onclick="navigateTo('crm')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Sales & Payments</button>
+            <button onclick="navigateTo('crates')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Crate Inventory</button>
+            <button onclick="navigateTo('reports')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Reports</button>
+            <button onclick="navigateTo('chicks')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Day-Old Chicks</button>
+            <button onclick="navigateTo('admin')" id="mobileAdminBtn" class="hidden w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700">Admin Portal</button>
+            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 text-red-400">Logout</button>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-8">
+            <!-- Alerts Container -->
+            <div id="alertsContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+            <!-- Dashboard Page -->
+            <div id="page-dashboard" class="page-content space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Farm Overview</h1>
+                        <p class="text-gray-600">Welcome back! Here's what's happening today at Dove Haven Farms.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="refreshDashboard()" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                            <span>Refresh</span>
+                        </button>
+                        <button onclick="exportDashboardPDF()" class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Export PDF</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 bg-blue-100 rounded-lg">
+                                <i data-lucide="egg" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <span class="text-sm text-green-600 font-medium" id="eggTrend">+12%</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900" id="todayEggs">0</p>
+                        <p class="text-sm text-gray-600">Eggs Today</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 bg-orange-100 rounded-lg">
+                                <i data-lucide="package" class="w-6 h-6 text-orange-600"></i>
+                            </div>
+                            <span class="text-sm text-gray-600 font-medium">In Stock</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900" id="todayCrates">0</p>
+                        <p class="text-sm text-gray-600">Crates Available</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 bg-green-100 rounded-lg">
+                                <i data-lucide="dollar-sign" class="w-6 h-6 text-green-600"></i>
+                            </div>
+                            <span class="text-sm text-green-600 font-medium">+8%</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900" id="todaySales">$0</p>
+                        <p class="text-sm text-gray-600">Today's Revenue</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 bg-purple-100 rounded-lg">
+                                <i data-lucide="activity" class="w-6 h-6 text-purple-600"></i>
+                            </div>
+                            <span class="text-sm text-gray-600 font-medium">Active</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900">3,450</p>
+                        <p class="text-sm text-gray-600">Birds in Houses</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-4">Weekly Egg Production</h3>
+                        <canvas id="productionChart" height="250"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-4">House Performance</h3>
+                        <canvas id="houseChart" height="250"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & House Status -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-4">Recent Collections</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3">Date</th>
+                                        <th class="px-4 py-3">House</th>
+                                        <th class="px-4 py-3">Crates</th>
+                                        <th class="px-4 py-3">Loose Eggs</th>
+                                        <th class="px-4 py-3">Total Eggs</th>
+                                        <th class="px-4 py-3">Collected By</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentProductionTable">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-4">House Status</h3>
+                        <div id="houseStatus" class="space-y-3">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rearing & Production Page -->
+            <div id="page-rearing" class="page-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Rearing & Production</h1>
+                        <p class="text-gray-600">Monitor flock growth, mortality, and egg production by house unit</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openGrowthModal()" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            <i data-lucide="trending-up" class="w-4 h-4"></i>
+                            <span>Record Growth</span>
+                        </button>
+                        <button onclick="openMortalityModal()" class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                            <i data-lucide="heart-pulse" class="w-4 h-4"></i>
+                            <span>Record Mortality</span>
+                        </button>
+                        <button onclick="openProductionModal()" class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Add Collection</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- House Units Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="houseUnitsGrid">
+                    <!-- Populated by JS with 60 units (10 houses × 6 units) -->
+                </div>
+
+                <!-- Growth & Production Charts Section -->
+                <div id="houseDetailSection" class="hidden bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-6">
+                    <div class="flex justify-between items-center border-b pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900" id="selectedHouseName">House 1A</h2>
+                            <p class="text-gray-600">Flock monitoring and production analytics</p>
+                        </div>
+                        <button onclick="closeHouseDetail()" class="text-gray-400 hover:text-gray-600">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <!-- Flock Summary Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <p class="text-sm text-blue-600 mb-1">Total Birds</p>
+                            <p class="text-2xl font-bold text-blue-900" id="flockTotalBirds">0</p>
+                            <p class="text-xs text-blue-700">Current flock size</p>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                            <p class="text-sm text-red-600 mb-1">Mortality Rate</p>
+                            <p class="text-2xl font-bold text-red-900" id="flockMortalityRate">0%</p>
+                            <p class="text-xs text-red-700">Total losses: <span id="flockTotalLosses">0</span></p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <p class="text-sm text-green-600 mb-1">Avg Daily Production</p>
+                            <p class="text-2xl font-bold text-green-900" id="flockAvgProduction">0</p>
+                            <p class="text-xs text-green-700">Eggs per day</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <p class="text-sm text-purple-600 mb-1">Feed Conversion</p>
+                            <p class="text-2xl font-bold text-purple-900" id="flockFeedConversion">0.0</p>
+                            <p class="text-xs text-purple-700">kg feed / egg</p>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Growth Chart (Weekly Weight)</h3>
+                            <canvas id="growthChart" height="250"></canvas>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Mortality Trend</h3>
+                            <canvas id="mortalityChart" height="250"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Laying Performance (% Hen Day)</h3>
+                            <canvas id="layingChart" height="250"></canvas>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Production Benchmark Comparison</h3>
+                            <div class="space-y-4" id="benchmarkSection">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Production Data Table for this House -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Production History</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3">Date</th>
+                                        <th class="px-4 py-3">Large</th>
+                                        <th class="px-4 py-3">Medium</th>
+                                        <th class="px-4 py-3">Small</th>
+                                        <th class="px-4 py-3">Pullet</th>
+                                        <th class="px-4 py-3">Broken</th>
+                                        <th class="px-4 py-3">Total Crates</th>
+                                        <th class="px-4 py-3">Total Eggs</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="houseProductionTable">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed Stock Page -->
+            <div id="page-inventory" class="page-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Feed & Ingredients Stock</h1>
+                        <p class="text-gray-600">Track all ingredients for feed formulation</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openInventoryModal()" class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Add Purchase</span>
+                        </button>
+                        <button onclick="openIngredientUsageModal()" class="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
+                            <i data-lucide="minus" class="w-4 h-4"></i>
+                            <span>Record Usage</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Inventory Alerts -->
+                <div id="inventoryAlerts" class="space-y-2">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Feed Ingredients Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="ingredientsGrid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Inventory Transaction History -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold mb-4">Inventory Transactions</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Ingredient</th>
+                                    <th class="px-4 py-3">Type</th>
+                                    <th class="px-4 py-3">Quantity</th>
+                                    <th class="px-4 py-3">Balance</th>
+                                    <th class="px-4 py-3">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryHistoryTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crate Inventory Page -->
+            <div id="page-crates" class="page-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Crate Inventory Management</h1>
+                        <p class="text-gray-600">Real-time crate tracking from production to sales</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openCrateAdjustmentModal()" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            <i data-lucide="adjustments" class="w-4 h-4"></i>
+                            <span>Adjust Stock</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-2">Available Crates</h3>
+                        <p class="text-4xl font-bold text-green-600" id="availableCrates">0</p>
+                        <p class="text-sm text-gray-600 mt-2">Ready for sale</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-2">Reserved/Sold Today</h3>
+                        <p class="text-4xl font-bold text-blue-600" id="soldCratesToday">0</p>
+                        <p class="text-sm text-gray-600 mt-2">From today's orders</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold mb-2">Damaged/Lost</h3>
+                        <p class="text-4xl font-bold text-red-600" id="damagedCrates">0</p>
+                        <p class="text-sm text-gray-600 mt-2">Needs replacement</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold mb-4">Crate Movement Log</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3">Date/Time</th>
+                                    <th class="px-4 py-3">Type</th>
+                                    <th class="px-4 py-3">Quantity</th>
+                                    <th class="px-4 py-3">Source/Destination</th>
+                                    <th class="px-4 py-3">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crateMovementTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales & Purchases Page -->
+            <div id="page-crm" class="page-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Sales & Purchases</h1>
+                        <p class="text-gray-600">Manage orders, track payments, record purchases, and monitor stock</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openCustomerModal()" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span>New Customer</span>
+                        </button>
+                        <button onclick="openOrderModal()" class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>New Order</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Egg Stock Stats (Same as Dashboard) -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Total Crates Today</p>
+                        <p class="text-2xl font-bold text-gray-900" id="salesTotalCrates">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Loose Eggs</p>
+                        <p class="text-2xl font-bold text-gray-900" id="salesTotalLoose">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Excess Quantity</p>
+                        <p class="text-2xl font-bold text-orange-600" id="salesTotalExcess">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Crates in Stock</p>
+                        <p class="text-2xl font-bold text-blue-600" id="salesCratesStock">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Total Eggs (All Grades)</p>
+                        <p class="text-2xl font-bold text-green-600" id="salesTotalEggs">0</p>
+                    </div>
+                </div>
+
+                <!-- Egg Grades Breakdown -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-semibold mb-4">Available Stock by Grade</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="eggGradesStock">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- CRM Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Total Outstanding</p>
+                        <p class="text-2xl font-bold text-red-600" id="totalOutstanding">$0.00</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Today's Cash Sales</p>
+                        <p class="text-2xl font-bold text-green-600" id="cashSales">$0.00</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Bank Deposits</p>
+                        <p class="text-2xl font-bold text-blue-600" id="bankSales">$0.00</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Pending Balance</p>
+                        <p class="text-2xl font-bold text-orange-600" id="pendingBalance">$0.00</p>
+                    </div>
+                </div>
+
+                <!-- Purchases Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold">Purchases Recording</h3>
+                        <button onclick="openPurchaseModal()" class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Record Purchase</span>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3">Date</th>
+                                        <th class="px-4 py-3">Item</th>
+                                        <th class="px-4 py-3">Category</th>
+                                        <th class="px-4 py-3">Quantity</th>
+                                        <th class="px-4 py-3">Unit Cost</th>
+                                        <th class="px-4 py-3">Total Cost</th>
+                                        <th class="px-4 py-3">Supplier</th>
+                                        <th class="px-4 py-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchasesTableBody">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customers & Orders Tabs -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="border-b border-gray-200">
+                        <div class="flex">
+                            <button onclick="switchCrmTab('customers')" id="tab-customers" class="px-6 py-3 text-sm font-medium border-b-2 border-green-600 text-green-600">Customers</button>
+                            <button onclick="switchCrmTab('orders')" id="tab-orders" class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-800">Orders & Payments</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <!-- Customers Tab -->
+                        <div id="crm-customers" class="crm-tab-content">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-3">Customer</th>
+                                            <th class="px-4 py-3">Contact</th>
+                                            <th class="px-4 py-3">Total Orders</th>
+                                            <th class="px-4 py-3">Balance Due</th>
+                                            <th class="px-4 py-3">Status</th>
+                                            <th class="px-4 py-3">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="customersTableBody">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Orders Tab -->
+                        <div id="crm-orders" class="crm-tab-content hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-3">Order ID</th>
+                                            <th class="px-4 py-3">Customer</th>
+                                            <th class="px-4 py-3">Date</th>
+                                            <th class="px-4 py-3">Crates</th>
+                                            <th class="px-4 py-3">Total</th>
+                                            <th class="px-4 py-3">Paid</th>
+                                            <th class="px-4 py-3">Balance</th>
+                                            <th class="px-4 py-3">Payment Method</th>
+                                            <th class="px-4 py-3">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ordersTableBody">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div id="page-reports" class="page-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
+                        <p class="text-gray-600">Generate production, sales, and inventory reports</p>
+                    </div>
+                </div>
+                
+                <!-- Report Generator -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-semibold mb-4">Generate Report</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                        <select id="reportType" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                            <option value="daily">Daily Report</option>
+                            <option value="weekly">Weekly Report</option>
+                            <option value="monthly">Monthly Report</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                        <input type="date" id="reportStartDate" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <input type="date" id="reportEndDate" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <select id="reportFormat" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                            <option value="pdf">PDF Export</option>
+                            <option value="view">View Online</option>
+                        </select>
+                    </div>
+                    <button onclick="generateReport()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        Generate Report
+                    </button>
+                </div>
+
+                <!-- Report Preview -->
+                <div id="reportPreview" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hidden">
+                    <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                        <div>
+                            <h2 class="text-xl font-bold">Dove Haven Farms Report</h2>
+                            <p class="text-gray-600" id="reportDateRange">Date Range: --</p>
+                        </div>
+                        <button onclick="downloadCurrentReport()" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            Download PDF
+                        </button>
+                    </div>
+                    <div id="reportContent" class="space-y-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day-Old Chicks Page (Placeholder for future development) -->
+            <div id="page-chicks" class="page-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Day-Old Chick Management</h1>
+                        <p class="text-gray-600">Track chick arrivals, mortality, and growth (Coming Soon)</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 text-center">
+                    <div class="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="bird" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Module Under Development</h3>
+                    <p class="text-gray-600 max-w-md mx-auto">This dashboard for tracking 1-day-old chick checks, mortality rates, and growth metrics will be available in the next update.</p>
+                    <button onclick="navigateTo('dashboard')" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        Return to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Panel Page -->
+            <div id="page-admin" class="page-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Admin Portal</h1>
+                        <p class="text-gray-600">Manage employees, system settings, and domain configuration</p>
+                    </div>
+                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                        admin.dovehaven.com
+                    </div>
+                </div>
+
+                <!-- Admin Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-2xl font-bold text-gray-900" id="totalEmployees">0</p>
+                        <p class="text-sm text-gray-600">Total Employees</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-2xl font-bold text-green-600" id="activeEmployees">0</p>
+                        <p class="text-sm text-gray-600">Active Today</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-2xl font-bold text-blue-600" id="totalHouses">4</p>
+                        <p class="text-sm text-gray-600">Active Houses</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-2xl font-bold text-purple-600" id="dataEntries">0</p>
+                        <p class="text-sm text-gray-600">Collections (7d)</p>
+                    </div>
+                </div>
+
+                <!-- Employee Management -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold">Employee Management</h3>
+                        <button onclick="openEmployeeModal()" class="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            Add Employee
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4">Name</th>
+                                    <th class="px-6 py-4">Role</th>
+                                    <th class="px-6 py-4">Assigned Houses</th>
+                                    <th class="px-6 py-4">Last Login</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Domain Settings -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold mb-4">Domain Configuration</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="font-medium mb-1">Admin Portal</p>
+                            <p class="text-sm text-gray-600 mb-2">Current: admin.dovehaven.com</p>
+                            <input type="text" value="admin.dovehaven.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="font-medium mb-1">Public Website</p>
+                            <p class="text-sm text-gray-600 mb-2">Customer facing: dovehavenfarms.com</p>
+                            <input type="text" value="dovehavenfarms.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Settings -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold mb-4">System Settings</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Eggs per Crate (Standard)</label>
+                            <input type="number" id="eggsPerCrate" value="30" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Low Feed Alert Threshold (kg)</label>
+                            <input type="number" id="stockThreshold" value="500" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Production Entry Modal -->
+    <div id="productionModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Record Egg Collection with Grades</h3>
+                <button onclick="closeModal('productionModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="productionForm" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input type="date" name="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">House Unit</label>
+                        <select name="houseId" id="productionHouseSelect" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                            <!-- Populated by JS with 60 units -->
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Egg Grades Input -->
+                <div class="border rounded-lg p-4 bg-gray-50">
+                    <h4 class="font-medium mb-3 text-gray-700">Egg Counts by Grade</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Large Eggs</label>
+                            <input type="number" name="largeEggs" id="largeEggsInput" min="0" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm" onchange="calculateGradesTotal()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Medium Eggs</label>
+                            <input type="number" name="mediumEggs" id="mediumEggsInput" min="0" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm" onchange="calculateGradesTotal()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Small Eggs</label>
+                            <input type="number" name="smallEggs" id="smallEggsInput" min="0" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm" onchange="calculateGradesTotal()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Pullet/X-Small</label>
+                            <input type="number" name="pulletEggs" id="pulletEggsInput" min="0" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm" onchange="calculateGradesTotal()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Broken</label>
+                            <input type="number" name="brokenEggs" id="brokenEggsInput" min="0" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none text-sm" onchange="calculateGradesTotal()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculated Totals -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div>
+                        <label class="block text-sm font-medium text-green-800 mb-1">Total Loose Eggs (Sum)</label>
+                        <input type="number" name="looseEggs" id="looseEggInput" readonly class="w-full px-4 py-2 border border-green-300 rounded-lg bg-white font-semibold text-green-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-green-800 mb-1">Full Crates (Auto: ÷30)</label>
+                        <input type="number" name="crates" id="crateInput" readonly class="w-full px-4 py-2 border border-green-300 rounded-lg bg-white font-semibold text-green-900">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-green-800 mb-1">Total Eggs (Auto)</label>
+                        <input type="number" name="totalEggs" id="totalEggDisplay" readonly class="w-full px-4 py-2 border border-green-300 rounded-lg bg-white font-bold text-green-900">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Feed Type Used</label>
+                        <select name="feedType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                            <option value="galdus">Galdus Feed</option>
+                            <option value="starter">Starter Feed</option>
+                            <option value="grower">Grower Feed</option>
+                            <option value="developer">Developer Feed</option>
+                            <option value="layer">Layer Feed</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Feed Used (kg)</label>
+                        <input type="number" name="feed" required min="0" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- Water/Medication Tracking -->
+                <div class="border rounded-lg p-4 bg-blue-50">
+                    <h4 class="font-medium mb-3 text-blue-800">Water & Medication</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Water Type</label>
+                            <select name="waterType" id="waterTypeSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" onchange="toggleMedicationFields()">
+                                <option value="plain">Plain Water</option>
+                                <option value="vitamins">Vitamins</option>
+                                <option value="medication">Medication</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Water Amount (liters)</label>
+                            <input type="number" name="waterAmount" min="0" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., 50">
+                        </div>
+                    </div>
+                    <div id="medicationFields" class="hidden space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Medication Name</label>
+                            <input type="text" name="medicationName" id="medicationNameInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Antibiotics, Dewormer">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Dosage</label>
+                                <input type="text" name="medicationDosage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., 10ml per liter">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Next Dose Date</label>
+                                <input type="date" name="nextDoseDate" id="nextDoseDateInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Comments</label>
+                    <textarea name="comments" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" placeholder="Any observations..."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('productionModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Save Collection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Excess Quantity Modal -->
+    <div id="excessModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-orange-600">Record Excess Quantity</h3>
+                <button onclick="closeModal('excessModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="excessForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" name="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">House</label>
+                    <select name="houseId" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                        <option value="house1f">House 1-F</option>
+                        <option value="house2j">House 2-J</option>
+                        <option value="house3f">House 3-F</option>
+                        <option value="house4j">House 4-J</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Excess Eggs Count</label>
+                    <input type="number" name="excessCount" required min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Number of extra eggs found">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Reason/Notes</label>
+                    <textarea name="reason" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Why excess? (e.g., missed yesterday's count, found in corners, etc.)"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('excessModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">Record Excess</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">New Order</h3>
+                <button onclick="closeModal('orderModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="orderForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
+                    <select name="customerId" id="orderCustomerSelect" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+                
+                <!-- Multiple Product Lines -->
+                <div class="border rounded-lg p-4 bg-gray-50">
+                    <h4 class="font-medium mb-3 text-gray-700">Order Items</h4>
+                    <div id="orderItemsContainer" class="space-y-3">
+                        <!-- Product Line 1 -->
+                        <div class="grid grid-cols-12 gap-2 items-end order-item-row">
+                            <div class="col-span-4">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Product</label>
+                                <select name="product[]" class="product-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm" onchange="calculateOrderTotal()">
+                                    <option value="">Select Grade</option>
+                                    <option value="eggs_large" data-price="30">Large Eggs (Crate)</option>
+                                    <option value="eggs_medium" data-price="28">Medium Eggs (Crate)</option>
+                                    <option value="eggs_small" data-price="25">Small Eggs (Crate)</option>
+                                    <option value="eggs_pullet" data-price="22">Pullet/X-Small Eggs (Crate)</option>
+                                    <option value="eggs_tray_large" data-price="12">Large Eggs (Tray)</option>
+                                    <option value="eggs_tray_medium" data-price="11">Medium Eggs (Tray)</option>
+                                    <option value="eggs_tray_small" data-price="10">Small Eggs (Tray)</option>
+                                    <option value="live_bird" data-price="15">Live Bird</option>
+                                    <option value="manure" data-price="5">Manure (Bag)</option>
+                                </select>
+                            </div>
+                            <div class="col-span-3">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Qty</label>
+                                <input type="number" name="quantity[]" min="0" value="0" class="quantity-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm" onchange="calculateOrderTotal()">
+                            </div>
+                            <div class="col-span-3">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Unit Price ($)</label>
+                                <input type="number" name="unitPrice[]" min="0" step="0.01" value="0" class="unit-price-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm" onchange="calculateOrderTotal()">
+                            </div>
+                            <div class="col-span-2">
+                                <button type="button" onclick="removeOrderItem(this)" class="w-full px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition text-sm">
+                                    <i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addOrderItem()" class="mt-3 flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition text-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Add Another Product
+                    </button>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-green-800">Subtotal:</span>
+                        <span class="text-lg font-bold text-green-900" id="orderSubtotal">$0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-green-800">Total Items:</span>
+                        <span class="text-sm font-semibold text-green-900" id="orderTotalItems">0 crates</span>
+                    </div>
+                </div>
+
+                <div class="border-t pt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Details</label>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Payment Method</label>
+                            <select name="paymentMethod" id="orderPaymentMethod" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                                <option value="cash">Cash</option>
+                                <option value="bank">Bank Deposit</option>
+                                <option value="mobile">Mobile Money</option>
+                                <option value="credit">Credit/Balance</option>
+                                <option value="mixed">Mixed Payment</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Amount Paid Now ($)</label>
+                            <input type="number" name="amountPaid" id="orderAmountPaid" min="0" step="0.01" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" onchange="updateOrderBalance()">
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Total Amount:</span>
+                            <span class="font-semibold" id="displayOrderTotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Amount Paid:</span>
+                            <span class="font-semibold text-green-600" id="displayOrderPaid">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-medium border-t pt-1 mt-1">
+                            <span>Balance Due:</span>
+                            <span class="text-red-600" id="displayOrderBalance">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('orderModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal (for existing orders) -->
+    <div id="paymentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Record Payment</h3>
+                <button onclick="closeModal('paymentModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="paymentForm" class="p-6 space-y-4">
+                <input type="hidden" name="orderId" id="paymentOrderId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Current Balance</label>
+                    <input type="text" id="currentBalanceDisplay" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-red-50 text-red-600 font-semibold">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                    <select name="paymentMethod" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="cash">Cash</option>
+                        <option value="bank">Bank Deposit</option>
+                        <option value="mobile">Mobile Money</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount Paid ($)</label>
+                    <input type="number" name="paymentAmount" required min="0.01" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Reference/Notes</label>
+                    <input type="text" name="paymentRef" placeholder="Receipt number, bank ref, etc." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('paymentModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Record Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Modal -->
+    <div id="customerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Add New Customer</h3>
+                <button onclick="closeModal('customerModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="customerForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input type="tel" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <textarea name="address" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('customerModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Add Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div id="employeeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Add Employee</h3>
+                <button onclick="closeModal('employeeModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="employeeForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                    <select name="role" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="employee">Farm Worker</option>
+                        <option value="supervisor">House Supervisor</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Assigned Houses</label>
+                    <div class="flex gap-2 flex-wrap">
+                        <label class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="houses" value="house1f" class="rounded text-green-600">
+                            <span class="text-sm">House 1-F</span>
+                        </label>
+                        <label class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="houses" value="house2j" class="rounded text-green-600">
+                            <span class="text-sm">House 2-J</span>
+                        </label>
+                        <label class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="houses" value="house3f" class="rounded text-green-600">
+                            <span class="text-sm">House 3-F</span>
+                        </label>
+                        <label class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer">
+                            <input type="checkbox" name="houses" value="house4j" class="rounded text-green-600">
+                            <span class="text-sm">House 4-J</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('employeeModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Add Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inventory Modal -->
+    <div id="inventoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Add Ingredient Purchase</h3>
+                <button onclick="closeModal('inventoryModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="inventoryForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ingredient Type</label>
+                    <select name="ingredientType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="corn">Corn/Maize</option>
+                        <option value="soybean">Soybean Meal</option>
+                        <option value="wheat">Wheat</option>
+                        <option value="fishmeal">Fish Meal</option>
+                        <option value="limestone">Limestone</option>
+                        <option value="dcp">DCP (Dicalcium Phosphate)</option>
+                        <option value="lysine">Lysine</option>
+                        <option value="methionine">Methionine</option>
+                        <option value="premix">Vitamin Premix</option>
+                        <option value="salt">Salt</option>
+                        <option value="oil">Vegetable Oil</option>
+                        <option value="starter">Starter Feed (Formulated)</option>
+                        <option value="grower">Grower Feed (Formulated)</option>
+                        <option value="developer">Developer Feed (Formulated)</option>
+                        <option value="layer">Layer Feed (Formulated)</option>
+                        <option value="galdus">Galdus Feed</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                    <input type="text" name="supplier" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantity Purchased</label>
+                    <input type="number" name="quantity" required min="0" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                    <select name="unit" id="inventoryUnitSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none" onchange="toggleBagSizeField()">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="bags">Bags</option>
+                    </select>
+                </div>
+                <div id="bagSizeField" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Bag Size</label>
+                    <select name="bagSize" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="5">5 kg</option>
+                        <option value="10">10 kg</option>
+                        <option value="20">20 kg</option>
+                        <option value="25">25 kg</option>
+                        <option value="50">50 kg</option>
+                        <option value="100">100 kg</option>
+                        <option value="150">150 kg</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cost per unit ($)</label>
+                    <input type="number" name="cost" required min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
+                    <input type="date" name="purchaseDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('inventoryModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Add Purchase</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ingredient Usage Modal -->
+    <div id="ingredientUsageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Record Ingredient Usage</h3>
+                <button onclick="closeModal('ingredientUsageModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="ingredientUsageForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" name="usageDate" id="usageDateInput" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ingredient</label>
+                    <select name="usageIngredient" id="usageIngredientSelect" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                        <option value="">Select Ingredient</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantity Used (kg)</label>
+                    <input type="number" name="usageQuantity" id="usageQuantityInput" required min="0" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Used For (House/Feed Type)</label>
+                    <input type="text" name="usagePurpose" id="usagePurposeInput" placeholder="e.g., House 1A, Layer Feed Mix" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <textarea name="usageNotes" id="usageNotesInput" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('ingredientUsageModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">Record Usage</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Growth Recording Modal -->
+    <div id="growthModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Record Flock Growth</h3>
+                <button onclick="closeModal('growthModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="growthForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" name="growthDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">House Unit</label>
+                    <select name="growthHouse" id="growthHouseSelect" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Flock/Batch ID</label>
+                    <input type="text" name="flockId" placeholder="e.g., F001-H1A" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Average Bird Weight (grams)</label>
+                    <input type="number" name="avgWeight" required min="0" step="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Total Birds in Flock</label>
+                    <input type="number" name="birdCount" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Age (weeks)</label>
+                    <input type="number" name="flockAge" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <!-- Water/Medication Tracking for Growth -->
+                <div class="border rounded-lg p-4 bg-blue-50">
+                    <h4 class="font-medium mb-3 text-blue-800">Water & Medication</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Water Type</label>
+                            <select name="growthWaterType" id="growthWaterTypeSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" onchange="toggleGrowthMedicationFields()">
+                                <option value="plain">Plain Water</option>
+                                <option value="vitamins">Vitamins</option>
+                                <option value="medication">Medication</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Water Amount (liters)</label>
+                            <input type="number" name="growthWaterAmount" min="0" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., 50">
+                        </div>
+                    </div>
+                    <div id="growthMedicationFields" class="hidden space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Medication Name</label>
+                            <input type="text" name="growthMedicationName" id="growthMedicationNameInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Antibiotics, Dewormer">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Dosage</label>
+                                <input type="text" name="growthMedicationDosage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., 10ml per liter">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Next Dose Date</label>
+                                <input type="date" name="growthNextDoseDate" id="growthNextDoseDateInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('growthModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Record Growth</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mortality Recording Modal -->
+    <div id="mortalityModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-red-600">Record Mortality</h3>
+                <button onclick="closeModal('mortalityModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="mortalityForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" name="mortalityDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">House Unit</label>
+                    <select name="mortalityHouse" id="mortalityHouseSelect" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Number of Deaths</label>
+                    <input type="number" name="deaths" required min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cause (if known)</label>
+                    <select name="cause" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                        <option value="unknown">Unknown</option>
+                        <option value="disease">Disease</option>
+                        <option value="predator">Predator</option>
+                        <option value="environment">Environmental (Heat/Cold)</option>
+                        <option value="cannibalism">Cannibalism</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <textarea name="mortalityNotes" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('mortalityModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Record Loss</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Purchase Recording Modal -->
+    <div id="purchaseModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Record Purchase</h3>
+                <button onclick="closeModal('purchaseModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="purchaseForm" class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input type="date" name="purchaseDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select name="purchaseCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                            <option value="feed">Feed/Ingredients</option>
+                            <option value="equipment">Equipment</option>
+                            <option value="medicine">Medicine/Vaccines</option>
+                            <option value="utilities">Utilities</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Item Description</label>
+                    <input type="text" name="purchaseItem" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                        <input type="number" name="purchaseQty" required min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                        <select name="purchaseUnit" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                            <option value="units">Units</option>
+                            <option value="kg">Kilograms</option>
+                            <option value="bags">Bags</option>
+                            <option value="liters">Liters</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Unit Cost ($)</label>
+                        <input type="number" name="unitCost" required min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Total Cost ($)</label>
+                        <input type="number" name="totalCost" required min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                    <input type="text" name="purchaseSupplier" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('purchaseModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Save Purchase</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Crate Adjustment Modal -->
+    <div id="crateAdjustmentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Adjust Crate Stock</h3>
+                <button onclick="closeModal('crateAdjustmentModal')" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="crateAdjustmentForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Adjustment Type</label>
+                    <select name="adjustmentType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="add">Add Crates (Purchase/Return)</option>
+                        <option value="remove">Remove Crates (Damage/Loss)</option>
+                        <option value="correct">Stock Correction</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                    <input type="number" name="crateQty" required min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+                    <input type="text" name="reason" required placeholder="e.g., Damaged crates, purchased new, etc." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal('crateAdjustmentModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Adjust Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Initialize icons on load
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
