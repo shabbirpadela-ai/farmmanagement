@@ -1,6 +1,19 @@
-<?php
-// Basic .htaccess for routing
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ api/index.php [QSA,L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Serve existing files/directories directly (assets, images, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Route /api/* to the API front controller
+RewriteRule ^api(/.*)?$ api/index.php [QSA,L]
+
+# All other requests go through the main front controller
+RewriteRule ^ index.php [QSA,L]
