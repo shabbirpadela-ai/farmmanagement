@@ -118,7 +118,7 @@ class Controller
               ?? null;
 
         if (!$token || !hash_equals((string)($_SESSION['csrf_token'] ?? ''), (string)$token)) {
-            $this->fail('Invalid CSRF token', 403);
+            $this->fail('Your session may have expired. Please refresh the page and try again.', 403);
         }
     }
 }

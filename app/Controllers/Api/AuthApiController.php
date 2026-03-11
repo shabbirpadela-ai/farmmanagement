@@ -21,11 +21,13 @@ class AuthApiController extends Controller
 
         $user = User::findByUsername($username);
 
-        if (
-            !$user
-            || $user['status'] !== 'active'
-            || !password_verify($password, $user['password_hash'])
-        ) {
+        // Always run password_verify to prevent timing attacks that reveal
+        // whether a username exists in the system.
+        $dummyHash = '$2y$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ01234';
+        $hashToCheck = $user ? $user['password_hash'] : $dummyHash;
+        $passwordMatches = password_verify($password, $hashToCheck);
+
+        if (!$user || $user['status'] !== 'active' || !$passwordMatches) {
             $this->fail('Invalid credentials', 401);
         }
 

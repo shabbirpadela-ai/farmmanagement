@@ -1,21 +1,25 @@
 -- Dove Haven Farms – Seed Data
 -- Run AFTER schema.sql.
 -- Creates the default admin user and sample inventory items.
--- Change the password hash below or use seed.php for a dynamic hash.
+--
+-- ⚠️  IMPORTANT: Do NOT use this file as-is in production.
+--     Use seed.php instead to set a strong custom password:
+--
+--     ADMIN_USER=admin ADMIN_PASS=YourStrongPassword123 php database/seed.php
+--
+-- The INSERT below uses a placeholder hash that will NOT allow login.
+-- You MUST run seed.php or manually update the password_hash column.
 
 SET NAMES utf8mb4;
 
--- ─── Default admin user ───────────────────────────────────────────────────────
--- Username: admin
--- Password: Admin@2024  (change immediately after first login!)
--- Hash generated with PHP: password_hash('Admin@2024', PASSWORD_BCRYPT)
+-- ─── Default admin user (PLACEHOLDER – password login disabled until seed.php is run) ─
 INSERT INTO `users` (`username`, `full_name`, `email`, `role`, `password_hash`, `status`)
 VALUES (
     'admin',
     'Administrator',
     'admin@dovehavenfarms.com',
     'admin',
-    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password (use seed.php for custom)
+    '$2y$10$PLACEHOLDER_RUN_seed.php_TO_SET_REAL_PASSWORD_HASH_xxxxx',
     'active'
 ) ON DUPLICATE KEY UPDATE `id` = `id`;
 

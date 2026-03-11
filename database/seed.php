@@ -30,6 +30,13 @@ if (strlen($password) < 8) {
     exit(1);
 }
 
+// Enforce basic password complexity for admin account
+if (!preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+    echo "ERROR: ADMIN_PASS must contain at least one uppercase letter and one number.\n";
+    echo "       Example: ADMIN_PASS=Admin@2024 php database/seed.php\n";
+    exit(1);
+}
+
 $hash = password_hash($password, PASSWORD_BCRYPT);
 
 try {
